@@ -8,12 +8,12 @@ for %%i in (intersystems-ru,intersystems) do (
 	echo.
 	echo Processing %%i forks
 	echo.
-	curl -s -H "Authorization: token %access_token%" https://api.github.com/orgs/%%i/repos?per_page=500 |jq  -c -r ".[] | select(.private<true and .fork>false)| .name, .url, .fork" | sed "N;N;s/\n/;/g" > repolist.%%i.txt
+	curl -s -H "Authorization: token %access_token%" https://api.github.com/orgs/%%i/repos?per_page=500 |jq  -c -r ".[] | select(.private<true and .fork>false)| .name, .url, .html_url, .fork" | sed "N;N;N;s/\n/;/g" > repolist.%%i.txt
 
 	rem parse all repositories - retrieve parent information
-	for /F "tokens=1,2 delims=;" %%j in (repolist.%%i.txt ) do ( 
+	for /F "tokens=1,2,3 delims=;" %%j in (repolist.%%i.txt ) do ( 
 		echo %%j --- %%k
-		curl -s -H "Authorization: token %access_token%" %%k|jq  -c ".| .parent.html_url, \\\"%%j\\\", \\\"%%k\\\" "  >> repolist.1.txt
+		curl -s -H "Authorization: token %access_token%" %%k|jq  -c ".| .parent.html_url, \\\"%%j\\\", \\\"%%l\\\" "  >> repolist.1.txt
 		sed -e "s/""//g;s/""$//g" repolist.1.txt | sed "N;N;s/\n/;/g"  > repolist.3.txt
 	)
 )
