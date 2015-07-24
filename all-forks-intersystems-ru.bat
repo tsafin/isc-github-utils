@@ -17,23 +17,31 @@ for %%i in (intersystems-ru,intersystems) do (
 		sed -e "s/""//g;s/""$//g" repolist.1.txt | sed "N;N;s/\n/;/g"  > repolist.3.txt
 	)
 )
-
 set staging=.git-staging
 @rem clean staging directory first
 rem rmdir /s/q %staging%
 
-rem checkout (clone if there is empty staging area, or update if there is something) all forks mentioned in repolist.3.txt
-
+echo.
+echo.
+echo checkout (clone if there is empty staging area, or update if there is something) all forks mentioned in repolist.3.txt
+echo proceeed fast-forward with upstream, if possible
+echo.
+echo.
 for /F "tokens=1,2,3 delims=;" %%i in (repolist.3.txt) do ( 
-	rem echo %%i --- %%j --- %%k
-	for /F "tokens=2,3 delims=/" %%l in ("%%k") do (
-		set company=%%m
-		call checkout-single.bat %staging% !company! %%j %%i %%k
-	)
+	call checkout-single.bat %staging% %%j %%i %%k
 )
 
+echo.
+echo.
+echo verify status for all repositories in the .staging area
+echo assumed to have everything which is changed in clean ahead-of-parent status
+echo if there is conflict then we should stop and do something manually
+echo.
+echo.
 call git-multi-status.bat
-echo Please review the status before proceeding further, or interrupt script via Ctrl+C
+echo. 
+echo *** Please review the status before proceeding further, or interrupt script via Ctrl+C ***
+echo.
 pause
 for /d %%i in (%staging%\*.*) do (
 	pushd %%i

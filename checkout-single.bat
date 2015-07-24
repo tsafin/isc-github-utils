@@ -1,14 +1,17 @@
 @echo off
 
 set staging=%1
-set company=%2
-set reponame=%3
-set parent=%4
-set repo=%5
+set reponame=%2
+set parent=%3
+set repo=%4
+
+for /F "tokens=2,3 delims=/" %%l in ("%repo%") do (
+	set company=%%m
+)
 
 set subdir=%staging%\%company%\%reponame%
 
-if not exist %subdir mkdir %subdir%
+if not exist %subdir% mkdir %subdir%
 pushd %subdir%
 echo %company%/%reponame% [ %parent% -^> %repo% ]
 if not exist .git (
