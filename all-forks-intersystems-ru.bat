@@ -1,7 +1,6 @@
 @echo off
 setLocal EnableDelayedExpansion
 del /Q repolist.txt repolist.intersystems*.txt repolist.1.txt repolist.3.txt 2>&1 > NUL
-set repo=intersystems-ru
 call .access_token.bat
 rem curl -I -H "Authorization: token OAUTH-TOKEN" https://api.github.com/orgs/intersystems-ru/repos?per_page=500
 for %%i in (intersystems-ru,intersystems) do (

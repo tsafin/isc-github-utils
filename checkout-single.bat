@@ -20,8 +20,11 @@ if not exist .git (
 ) else (
 	git pull origin master
 )
+rem just in case - make it global. It should be so
+git config --global core.autocrlf true
 git fetch upstream
 git checkout master
+git clean -fd
 git merge upstream/master
 
 popd
